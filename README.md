@@ -1,4 +1,4 @@
-# -Hidden-Star-in-Four-Seasons
+# 复刻-Hidden-Star-in-Four-Seasons
 半半半半半成品
 
 *高血压注意，本项目包含一系列不符合规范的代码，包括但不限于：在头文件中实现函数、冗长的命名、言不达意的注释、c语言与c++混合使用、用不上的变量
