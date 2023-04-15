@@ -23,12 +23,22 @@ double theta_to_y(double theta, double r)//这里我懒得转换坐标系了
 class move_class
 {
 public:
-	static void normal(enemy_class *enemy)
+	static int normal(enemy_class *enemy,char changed_direction)
 	{
-		enemy->name_enemy.x += enemy->name_enemy.v_x;
-		enemy->name_enemy.y += enemy->name_enemy.v_y;
-		enemy->name_enemy.v_x += enemy->name_enemy.a_x;
-		enemy->name_enemy.v_y += enemy->name_enemy.a_y;
+		switch (changed_direction)
+		{
+		case 'x':
+			enemy->name_enemy.x += enemy->name_enemy.v_x;
+			enemy->name_enemy.v_x += enemy->name_enemy.a_x;
+			break;
+		case 'y':
+			enemy->name_enemy.y += enemy->name_enemy.v_y;
+			enemy->name_enemy.v_y += enemy->name_enemy.a_y;
+			break;
+		default:
+			return 0;
+		}
+		return 1;
 	}
 }move_class;
 
@@ -40,7 +50,7 @@ double get_x(double time_exist, enemy_class::bullet who)//算法相同，所以合并了
 {
 	switch (who.move_x)
 	{
-	case move::move_null://匀速直线
+	case move::move_normal://匀速直线
 		return who.r_created * cos(who.move_theta) * time_exist;
 	}
 }
@@ -48,7 +58,7 @@ double get_y(double time_exist, enemy_class::bullet who)
 {
 	switch (who.move_y)
 	{
-	case move::move_null:
+	case move::move_normal:
 		return who.r_created * sin(who.move_theta) * time_exist;
 	}
 

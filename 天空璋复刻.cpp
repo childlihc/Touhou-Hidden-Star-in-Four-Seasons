@@ -28,7 +28,7 @@ double control_choose_move = 1;
 wchar_t title_word[5][2] = { L"东" ,L"方",L"天",L"空",L"璋" };
 wchar_t title_word_english[5][8] = { L"Hidden",L"Star",L"in",L"Four",L"Seasons" };
 
-std::vector<set_enemy> stage_1_youkai = { {200,200,少,0,YELLOW},{300,300,少,0,GREEN},{400,400,少,0,BLACK},{500,300,少,0,BROWN},{400,300,少,0,WHITE},{500,600,少,0,BLACK}};//在这里赋好值再运行
+std::vector<set_enemy> stage_1_youkai = { {100,100,少,0,YELLOW},{150,100,少,0,GREEN},{200,100,少,0,BLACK},{250,100,少,0,BROWN},{300,100,少,0,WHITE},{350,100,少,0,BLUE}};//在这里赋好值再运行
 std::vector<set_enemy> stage_2_youkai = { {},{},{} };//动态数组，像他妈数组一样
 
 
@@ -484,11 +484,20 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 		*tem_head = *all_enemy;
 		while (tem_head != NULL)
 		{
-			switch (tem_head->name_enemy.mark_move_line)
+			switch (tem_head->name_enemy.move_line_x)
 			{
 			case move_null:
-				move_class::normal(tem_head);
 				break;
+			case move_normal:
+				move_class::normal(tem_head,'x');
+				break;
+			}
+			switch (tem_head->name_enemy.move_line_y)
+			{
+			case move_null:
+				break;
+			case move_normal:
+				move_class::normal(tem_head, 'y');
 			}
 			tem_head = tem_head->next;
 		}

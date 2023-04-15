@@ -41,6 +41,7 @@ enum { 灵梦 = 0, 魔理沙, 爱丽丝 };
 //敌机运动轨迹相关
 enum move{
     move_null = 0, //  轨迹符合匀速运动
+    move_normal, //不运动（坐标不改变）
     move_add, //匀加速运动
     move_add_add, //变加速运动 
     move_sin, // 正弦波
@@ -117,7 +118,8 @@ public:
         short wait = 0; //敌机从生成到移动的时间段  (为0则生成)
         double v_x = 6, v_y = 6;//敌机速度
         double a_x = 0, a_y = 0;//敌机加速度
-        int mark_move_line = move_null; //标记运动路线（默认符合加速运动）
+        int move_line_x = move_null; //标记运动路线（默认符合加速运动）
+        int move_line_y = move_normal;
         short isexisted = 0;//是否生成   可能直接delete就行了???
         short time_born = -1;//用于if判断 是否到了生成的时刻
         int time_exist = 0;//（非必要，敌机已生成的时间，用于控制运动轨迹）
