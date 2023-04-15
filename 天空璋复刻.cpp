@@ -120,11 +120,19 @@ enemy_class* _stdcall information_enemy(_Inout_ std::vector<set_enemy> *enemy_in
 	static enemy_class* head = new enemy_class;//链表头
 	//static set_enemy* one_by_one = new set_enemy;
 	static enemy_class *present_enemy = new enemy_class;
+	head = present_enemy;
+	static enemy_class* tem_enemy = new enemy_class;
+	
+	/*
 	present_enemy->name_enemy = *enemy_inf->begin();//某个类的头地址
 	//head->name_enemy = present_enemy->name_enemy;//创建链表
 	present_enemy->initialize();//第一个
 	head = present_enemy;//创建链表
-	static enemy_class* tem_next;
+	head->next = present_enemy;
+	*/
+	//head = present_enemy;
+	//head->next = present_enemy;//后面已经有了
+	//static enemy_class* tem_next;
 	
 	//va_list begin;//初始化(为链表做准备)///TMD，不是可变参数函数用不了va_list
 	//va_start(begin, &present_enemy);//不知道可不可以，不行的话就得改一下”set_enemy present_enemy = *enemy_inf->begin();//某个类的头地址“了
@@ -138,16 +146,18 @@ enemy_class* _stdcall information_enemy(_Inout_ std::vector<set_enemy> *enemy_in
 
 	for (int i = 0; i < enemy_inf->size(); i++)
 	{
-		tem_next = new enemy_class;
-		tem_next->name_enemy = (*enemy_inf)[i] ;//我他妈像疯了一样
+		tem_enemy = new enemy_class;
+		tem_enemy->name_enemy = (*enemy_inf)[i] ;//我他妈像疯了一样
 		//居然可以，真离谱
-		tem_next->initialize();//初始化赋值 （详见注释）
+		tem_enemy->initialize();//初始化赋值 （详见注释）
 		//present_enemy->name_enemy.next_enemy = &(tem_next->name_enemy);
-		head->next = present_enemy;
-		head = present_enemy;//???
-		present_enemy = tem_next;//换下一个类
+		
+		present_enemy->next = tem_enemy;//换下一个类
+		present_enemy = tem_enemy;//???
+		//present_enemy = tem_next;//换下一个类
 	}
-	present_enemy->name_enemy.next_enemy = NULL;//结束
+	tem_enemy->next = NULL;
+	////present_enemy->name_enemy.next_enemy = NULL;//结束
 	//delete(tem);//或许用不着delete
 	//tem_next = NULL;//结束
 	return head;
@@ -292,14 +302,16 @@ void generate_enemy(int frist_x, int frist_y, COLORREF color[],int **which[],int
 	
 }
 */
-void draw_enemy()//(COLORREF color_enemy)//绘制敌机
+void draw_enemy(enemy_class* head_of_enemy = NULL)//(COLORREF color_enemy)//绘制敌机
+//输入链表头（如果有的话）
 {
 	//setfillcolor(color_enemy);//敌机颜色
 	enemy_class* tem_enemy = new enemy_class;
-	*tem_enemy = *true_frist_enemy;
+	*tem_enemy = (head_of_enemy == NULL ? *true_frist_enemy : *head_of_enemy);//我不记得true_frist_enemy是不是链表头了
+	//建立临时类链表头
 	while (tem_enemy!= NULL)
 	{
-		setfillcolor(tem_enemy->bullet_enemy.color);
+		setfillcolor(tem_enemy->name_enemy.color);
 		fillcircle(tem_enemy->name_enemy.x, tem_enemy->name_enemy.y, r_enemy);
 		tem_enemy = tem_enemy->next;
 		//未响应原因是next_enemy一直都是空指针（NULL）,原因其实是next_enemy一直没有初始化
@@ -464,7 +476,7 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 			//*tem_last_enemy = *frist_enemy;
 			//frist_enemy = true_frist_enemy;
 			//set_enemy* tem_ = (struct enemy*)malloc(sizeof enemy);//防无响应
-			draw_enemy();
+			draw_enemy(true_frist_enemy);
 		}
 
 		//敌机移动（改变位置，不绘制）
