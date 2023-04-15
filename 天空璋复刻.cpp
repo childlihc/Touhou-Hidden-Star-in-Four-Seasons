@@ -59,10 +59,6 @@ LOGFONT mode_description//难度描述的文字格式
 {
 
 };
-
-
-
-
 //typedef struct enemy _enemy ;
 
 enemy_class *tem_next_enemy;
@@ -81,8 +77,7 @@ volatile void delay(double count)//防止被编译器优化
 
 // (废弃了，类里面有)void init_enemy(enemy_class* class_e)//(只能单个，多个（链表）不太好写，摆了)初始化敌机信息（包括位置、初始血量等）
 
-/*
-
+/*//因为只使用类链表和弹幕动态数组，所以用不上了
 void init_bullet_head()//为敌机子弹的头赋值并跳过，防止头被删除
 {
 	bullet_enemy_head->frist_direction_about_orgin = 0;
@@ -90,8 +85,8 @@ void init_bullet_head()//为敌机子弹的头赋值并跳过，防止头被删�
 	bullet_enemy_head->r_bullet = 1;
 	bullet_enemy_head->next_bullet = all_bullet_enemy;
 }
-
 */
+
 
 
 int initialize(void)//初始化信息
@@ -470,14 +465,12 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 		//绘制敌机（包装成函数）
 		if (1)
 		{
-			
 			//set_enemy* tem_last_enemy = (struct enemy*)malloc(sizeof enemy);
 			//*tem_last_enemy = *frist_enemy;
 			//frist_enemy = true_frist_enemy;
 			//set_enemy* tem_ = (struct enemy*)malloc(sizeof enemy);//防无响应
 			draw_enemy(true_frist_enemy);
 		}
-
 		//敌机移动（改变位置，不绘制）
 		//使用move_class的函数
 		enemy_class* tem_head = new enemy_class;//不这样的话tem_head == NULL，无法赋值（包括指针)

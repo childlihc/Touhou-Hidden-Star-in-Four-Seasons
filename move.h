@@ -42,9 +42,22 @@ public:
 	}
 }move_class;
 
+class move_function   //这里记录一切运动轨迹函数
+	//直角坐标系
+{
+public:
 
 
+};
 
+class graphics_all  //节省存储，直接只用代码绘制图案
+{
+	void heart(int x,int y)
+	{
+		setorigin(x, y);
+		//pow((x_ * x_ + y_ * y_ - 1),3) - pow(x,2) * pow(y,3) == 0
+	}
+};
 
 double get_x(double time_exist, enemy_class::bullet who)//算法相同，所以合并了
 {
