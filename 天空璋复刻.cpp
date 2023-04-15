@@ -63,7 +63,6 @@ LOGFONT mode_description//难度描述的文字格式
 
 
 
-
 //typedef struct enemy _enemy ;
 
 enemy_class *tem_next_enemy;
@@ -480,7 +479,19 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 		}
 
 		//敌机移动（改变位置，不绘制）
-
+		//使用move_class的函数
+		enemy_class* tem_head = new enemy_class;//不这样的话tem_head == NULL，无法赋值（包括指针)
+		*tem_head = *all_enemy;
+		while (tem_head != NULL)
+		{
+			switch (tem_head->name_enemy.mark_move_line)
+			{
+			case move_null:
+				move_class::normal(tem_head);
+				break;
+			}
+			tem_head = tem_head->next;
+		}
 
 		//生成子弹（做好心理准备，这段可能要重写，甚至用不上）
 		
@@ -537,7 +548,7 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 		*/
 
 		//绘制子弹
-		enemy_class *tem_head = new enemy_class;//不这样的话tem_head == NULL，无法赋值（包括指针)
+		tem_head = new enemy_class;//不这样的话tem_head == NULL，无法赋值（包括指针)
 		*tem_head = *all_enemy;
 		while (tem_head != NULL)
 		{

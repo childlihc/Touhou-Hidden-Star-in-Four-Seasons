@@ -25,6 +25,7 @@ extern double xy_to_theta(double x, double y, double* theta_name);
 extern double theta_to_x(double theta, double r);
 double theta_to_y(double theta, double r);
 extern int screen_x, screen_y;
+extern class move_class;
 
 //#include "c测试.cpp"
 
@@ -38,8 +39,10 @@ enum { 灵梦 = 0, 魔理沙, 爱丽丝 };
 
 
 //敌机运动轨迹相关
-enum {
-    move_null = 0, //  轨迹符合加速运动
+enum move{
+    move_null = 0, //  轨迹符合匀速运动
+    move_add, //匀加速运动
+    move_add_add, //变加速运动 
     move_sin, // 正弦波
     move_x_a, // x的a次幂（a是常数）
     move_a_x  //a的x次幂
@@ -129,7 +132,6 @@ public:
     //{
 
     //};
-
     
     //enemy sample_enemy;//为了可以引用结构体里的变量（主要是为了frist_x与frist_y）
 
