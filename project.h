@@ -25,13 +25,14 @@
 #include <assert.h>
 #include <initializer_list>
 #include <vector>
-
+#include "move.h"
+//using namespace switch_class;
 extern int time_game;
-//extern double switch_class::xy_to_theta(double x, double y, double* theta_name);
-//extern double switch_class::theta_to_x(double theta, double r);
-//double theta_to_y(double theta, double r);
+extern double xy_to_theta(double x, double y, double* theta_name);
+extern double theta_to_x(double theta, double r);
+double theta_to_y(double theta, double r);
 extern int screen_x, screen_y;
-using namespace switch_class;
+
 //#include "c测试.cpp"
 
 #define pi 3.14159265
@@ -44,9 +45,10 @@ enum { 灵梦 = 0, 魔理沙, 爱丽丝 };
 
 
 //敌机运动轨迹相关
-enum move{
+enum move {
     move_null = 0, //不运动（坐标不改变）
     move_normal, //  轨迹符合匀速运动
+    move_step_by_step, //步进运动
     move_function, //运动轨迹可以用函数表达式描绘出来
     move_add, //匀加速运动
     move_add_add, //变加速运动 
@@ -124,9 +126,10 @@ public:
         short wait = 0; //敌机从生成到移动的时间段  (为0则生成)
         double v_x = 6, v_y = 6;//敌机速度
         double a_x = 0, a_y = 0;//敌机加速度
-        int move_line_x = move_null; //标记运动路线（默认符合加速运动）
-        int move_line_y = move_normal;
-        short isexisted = 0;//是否生成   可能直接delete就行了???
+        short move_line_x = move_null; //标记运动路线（默认符合加速运动）
+        short move_line_y = move_normal;
+        unsigned int isexisted : 1;//是否生成   可能直接delete就行了???
+        unsigned int isjudge : 1;//是否进行碰撞检测
         short time_born = -1;//用于if判断 是否到了生成的时刻
         int time_exist = 0;//（非必要，敌机已生成的时间，用于控制运动轨迹）
 
@@ -154,10 +157,10 @@ public:
         double frist_direction_about_orgin = 20;//发弹口离原点（敌机中心s）的距离
         double  r_created = 0;//生成时原点的坐标和生成点离该点的距离
         double r_bullet = 米弹; //子弹半径
-        short isexist = 0;//是否绘制
-        short isjudge = 0;//是否进行碰撞检测
-        int move_x = 0;//x方向移动方式
-        int move_y = 0;
+        unsigned int isexist :1;//是否绘制
+        unsigned int isjudge :1;//是否进行碰撞检测
+        short move_x = 0;//x方向移动方式
+        short move_y = 0;
         COLORREF color = BLUE;//子弹颜色
         //bullet* next_bullet = NULL;  //只用类链表
     }bullet_enemy;
@@ -167,6 +170,14 @@ public:
     
     //void move();//好像在move.h里面
     //void shoot();//不知道在哪
+
+    enemy_class()
+    {
+        this->bullet_enemy.isexist = 1;
+        this->bullet_enemy.isjudge = 0;
+        this->name_enemy.isexisted = 1;
+        this->name_enemy.isjudge = 1;
+    };
 
     int number_of_bullet = 1;
     enemy_class::bullet *frist_bullet;//便于引用弹幕数组，我总不能调用一次输入一次所有弹幕，执行下一个函数的时候的时候自动赋初值
@@ -265,7 +276,7 @@ void draw_bullet(double enemy_x, double enemy_y, bullet_of_enemy* bullet_druw, C
 {
     setorigin(enemy_x, enemy_y);//设置原点坐标
     setfillcolor(color);
-    fillcircle(switch_class::theta_to_x(bullet_druw->move_theta, bullet_druw->r_created)
+    fillcircle(theta_to_x(bullet_druw->move_theta, bullet_druw->r_created)
         , theta_to_y(bullet_druw->move_theta, bullet_druw->r_created), 5);
     setorigin(0, 0);
 }
@@ -394,8 +405,8 @@ void bullet_class::draw_bullet(bullet_of_enemy* bullet_druw, COLORREF color = BL
 {
     setorigin(bullet_druw->enemy_x, bullet_druw->enemy_y);//设置原点坐标
     setfillcolor(color);
-    fillcircle(switch_class::theta_to_x(bullet_druw->move_theta, bullet_druw->r_created)
-        , switch_class::theta_to_y(bullet_druw->move_theta, bullet_druw->r_created), 5);
+    fillcircle(theta_to_x(bullet_druw->move_theta, bullet_druw->r_created)
+        , theta_to_y(bullet_druw->move_theta, bullet_druw->r_created), 5);
     setorigin(0, 0);
 }
 

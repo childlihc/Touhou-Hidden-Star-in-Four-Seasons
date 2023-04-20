@@ -1,5 +1,6 @@
-﻿#include "project.h"
-#include "move.h"
+﻿#include "move.h"
+#include "project.h"
+
 
 
 #define defalut_generate_enemy_x_left (tang_x - r_enemy) //默认生成敌机初坐标
@@ -419,15 +420,15 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 		*/
 
 		//绘制子弹
+		delete tem_head;
 		tem_head = new enemy_class;//不这样的话tem_head == NULL，无法赋值（包括指针)
 		*tem_head = *all_enemy;
-		while (tem_head != NULL)
+		while (tem_head != nullptr)
 		{
 			for (int i = 0; i < tem_head->number_of_bullet; i++)
 			{
-				draw_bullet(tem_head->name_enemy.frist_x, tem_head->name_enemy.frist_x, &(tem_head->frist_bullet[i]));
+				//draw_bullet(tem_head->name_enemy.frist_x, tem_head->name_enemy.frist_x, &(tem_head->frist_bullet[i]));
 			}
-			
 			tem_head = tem_head->next;
 		}
 

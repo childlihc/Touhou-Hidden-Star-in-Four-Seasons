@@ -1,28 +1,28 @@
-
+#pragma once
+#include "project.h"
 #ifndef _move_h_
 #define _move_h_
 extern move;
 
-
+/*
 namespace switch_class
 {
-
 	double xy_to_theta(double x, double y, double* theta_name);
 	double theta_to_x(double theta, double r);
 	double theta_to_y(double theta, double r);
 };
-
-double switch_class::xy_to_theta(double x, double y, double* theta_name)//直角坐标转极坐标,输入极角的变量名，返回极径
+*/
+double xy_to_theta(double x, double y, double* theta_name)//直角坐标转极坐标,输入极角的变量名，返回极径
 {
 	*theta_name = atan2(y, x);
 	return sqrt(pow(x, 2) + pow(y, 2));
 }
 
-double switch_class::theta_to_x(double theta, double r)
+double theta_to_x(double theta, double r)
 {
 	return r * cos(theta);
 }
-double switch_class::theta_to_y(double theta, double r)//这里我懒得转换坐标系了
+double theta_to_y(double theta, double r)//这里我懒得转换坐标系了
 {
 	return -(r * sin(theta));
 }
@@ -91,19 +91,25 @@ public:
 class _graphics_all graphics_all;
 namespace get_class
 {
-	double get_x(double time_exist, enemy_class::bullet who);
-	double get_y(double time_exist, enemy_class::bullet who);
+	double get_x(double time_exist, enemy_class::bullet who, double sth);
+	double get_y(double time_exist, enemy_class::bullet who, double sth);
 };
 
-double get_class::get_x(double time_exist, enemy_class::bullet who)//算法相同，所以合并了
+double get_class::get_x(double time_exist, enemy_class::bullet who,double sth = 0)//算法相同，所以合并了
+//sth是杂项，目前还不知道应该代表什么
 {
 	switch (who.move_x)
 	{
 	case move::move_normal://匀速直线
 		return who.r_created * cos(who.move_theta) * time_exist;
+		break;
+	case move::move_step_by_step:
+		return 0.0;
+		break;
+
 	}
 }
-double get_class::get_y(double time_exist, enemy_class::bullet who)
+double get_class::get_y(double time_exist, enemy_class::bullet who,double sth = 0)
 {
 	switch (who.move_y)
 	{
