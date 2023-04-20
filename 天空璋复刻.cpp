@@ -20,7 +20,6 @@ int frist_order_x = 100, frist_order_y = 300;//控制光标
 int order_level = 1;//选择的第几个难度(决定难度)
 int time_game = 1;//游戏运行时间刻
 int player_live = 8, player_live_splinter = 0,player_bomb = 3,player_bomb_splinter = 0;//生命碎片和bomb碎片
-int generate_enemy_number = 1;//这是生成的第几只敌机
 int choose_character = 1;//选择的自机
 double r_graze = r_player * 3;//擦弹范围，同时也是碰撞检查的范围半径（圆形）
 
@@ -32,8 +31,7 @@ wchar_t title_word_english[5][8] = { L"Hidden",L"Star",L"in",L"Four",L"Seasons" 
 std::vector<set_enemy> stage_1_youkai = { {100,100,少,0,YELLOW},{150,100,少,0,GREEN},{200,100,少,0,BLACK},{250,100,少,0,BROWN},{300,100,少,0,WHITE},{350,100,少,0,BLUE}};//在这里赋好值再运行
 std::vector<set_enemy> stage_2_youkai = { {},{},{} };//动态数组，像他妈数组一样
 
-
-enum move_move {匀直 = 0,变直,匀圆周,};
+//enum move_move {匀直 = 0,变直,匀圆周,};
 
 enum character_name
 {_冴月麟 = 0, _灵梦,_琪露诺,_文,_魔理沙,_爱丽丝};//夹了一点私货 
@@ -76,20 +74,6 @@ volatile void delay(double count)//防止被编译器优化
 		;
 }
 
-// (废弃了，类里面有)void init_enemy(enemy_class* class_e)//(只能单个，多个（链表）不太好写，摆了)初始化敌机信息（包括位置、初始血量等）
-
-/*//因为只使用类链表和弹幕动态数组，所以用不上了
-void init_bullet_head()//为敌机子弹的头赋值并跳过，防止头被删除
-{
-	bullet_enemy_head->frist_direction_about_orgin = 0;
-	bullet_enemy_head->v_absolute = 0;
-	bullet_enemy_head->r_bullet = 1;
-	bullet_enemy_head->next_bullet = all_bullet_enemy;
-}
-*/
-
-
-
 int initialize(void)//初始化信息
 {
 	srand(time(0));
@@ -101,8 +85,6 @@ int initialize(void)//初始化信息
 	
 	return 1;
 }
-
-
 
 //生成一个类，将敌机与弹幕联系起来
 enemy_class* _stdcall information_enemy(_Inout_ std::vector<set_enemy> *enemy_inf)//把这个类里面的信息转换成链表的形式（虽然我也不知道为啥要这样）
@@ -116,44 +98,16 @@ enemy_class* _stdcall information_enemy(_Inout_ std::vector<set_enemy> *enemy_in
 	static enemy_class *present_enemy = new enemy_class;
 	head = present_enemy;
 	static enemy_class* tem_enemy = new enemy_class;
-	
-	/*
-	present_enemy->name_enemy = *enemy_inf->begin();//某个类的头地址
-	//head->name_enemy = present_enemy->name_enemy;//创建链表
-	present_enemy->initialize();//第一个
-	head = present_enemy;//创建链表
-	head->next = present_enemy;
-	*/
-	//head = present_enemy;
-	//head->next = present_enemy;//后面已经有了
-	//static enemy_class* tem_next;
-	
-	//va_list begin;//初始化(为链表做准备)///TMD，不是可变参数函数用不了va_list
-	//va_start(begin, &present_enemy);//不知道可不可以，不行的话就得改一下”set_enemy present_enemy = *enemy_inf->begin();//某个类的头地址“了
-	//意思是从传入参数的第一个开始为链表赋值
-
-	//for (int tem = 0; tem < enemy_inf->size(); tem++)
-	//for (;bool operator != (present_enemy & *enemy_inf->end()&);resent_enemy )
-
-	//std::_Vector_iterator<std::_Vector_val<std::_Simple_types<set_enemy>>>* tem = new std::_Vector_iterator<std::_Vector_val<std::_Simple_types<set_enemy>>>;
-	//*tem = enemy_inf->begin();//因为begin（）是右值，没法用&取地址,所以临时整一个代替品
-
 	for (int i = 0; i < enemy_inf->size(); i++)
 	{
 		tem_enemy = new enemy_class;
 		tem_enemy->name_enemy = (*enemy_inf)[i] ;//我他妈像疯了一样
 		//居然可以，真离谱
 		tem_enemy->initialize();//初始化赋值 （详见注释）
-		//present_enemy->name_enemy.next_enemy = &(tem_next->name_enemy);
-		
 		present_enemy->next = tem_enemy;//换下一个类
 		present_enemy = tem_enemy;//???
-		//present_enemy = tem_next;//换下一个类
 	}
-	tem_enemy->next = NULL;
-	////present_enemy->name_enemy.next_enemy = NULL;//结束
-	//delete(tem);//或许用不着delete
-	//tem_next = NULL;//结束
+	tem_enemy->next = NULL;//结束
 	return head;
 }
 
@@ -368,55 +322,6 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 		//生成子弹（做好心理准备，这段可能要重写，甚至用不上）
 		
 		/*
-		double theta_change = 0;
-		double theta_change_2 = 2;
-		int tem_theta_change_1 = 1;
-		int tem_geneater_enemy;
-		//bullet_of_enemy* tem_head = new bullet_of_enemy;
-		bullet_of_enemy *t_head = new bullet_of_enemy;//子弹，不是敌机,仅用于生成子弹，之后就放在类里面了
-		unsigned int number_of_bullet = 1;
-		tem_geneater_enemy = time_game % 5;
-		switch (tem_geneater_enemy)
-		{
-		case 2:
-			for (double i = 0; i < 12; i++)
-			{
-				next_bullet_enemy = bullet_class::generated_bullet((i * (Pi / 6)) + theta_change * (Pi / theta_change_2), r_boss, BLUE);
-				all_bullet_enemy->next_bullet = next_bullet_enemy;
-				all_bullet_enemy = next_bullet_enemy;
-				number_of_bullet++;
-			}
-			theta_change++;
-			theta_change_2 = 18;
-			break;
-		case 3:
-			if (time_game > 80)
-			{
-				for (double i = 0; i < 9; i++)
-				{
-					next_bullet_enemy = bullet_class::generated_bullet((Pi / 9) + (i + 1) * (2 * Pi / 8) - (tem_theta_change_1 * Pi / 32), r_boss, RED, 10);
-					all_bullet_enemy->next_bullet = next_bullet_enemy;
-					all_bullet_enemy = next_bullet_enemy;
-					number_of_bullet++;
-					tem_theta_change_1++;
-				}
-			}
-			if (time_game > 40 && time_game < 80)//* 30)
-			{
-
-				for (double i = 0; i < 8; i++)
-				{
-					next_bullet_enemy = bullet_class::generated_bullet((Pi / 9) + (i + 1) * (2 * Pi / 8), r_boss, RED, 10);
-					all_bullet_enemy->next_bullet = next_bullet_enemy;
-					all_bullet_enemy = next_bullet_enemy;
-					number_of_bullet++;
-				}
-
-			}
-			break;
-		}
-		all_bullet_enemy->next_bullet = NULL;
-		
 		*/
 
 		//绘制子弹
@@ -625,7 +530,6 @@ int game_start()//选择“游戏开始”后的画面
 			}
 		}
 		FlushBatchDraw();
-		//_getch();
 	}
 
 }
@@ -674,11 +578,7 @@ int choose_tp( )//选择选项（游戏未开始界面）
 
 		}
 	}
-	/*int tem_inter;
-	do {
-		tem_inter = _getch();
-	} while (!(tem_inter == 88 || tem_inter == 120));
-	*/return 0;
+	return 0;
 }
 
 int judge_ex()//判断ex难度是否解锁
@@ -715,10 +615,6 @@ void printf_game_menu()
 		}
 	}
 	settextstyle(&normal);
-	//outtextxy();
-	//delay(8000.0/6);
-
-	
 }
 
 int for_main()
@@ -736,23 +632,6 @@ int for_main()
 			{
 				return 0;
 			}
-			/*
-			if ((order == number_choose) && (tem_inter == 'x' || tem_inter == 'X'))
-			{
-				char other_inter = _getch();
-				if (tem_inter == 'x' || tem_inter == 'X')
-				{
-					return 0;
-				}
-			}*/
-			/*else
-			{
-				delay(10000);
-				if ((GetKeyState(0x58) < 0)&&(order == number_choose))
-				{
-					return 0;
-				}
-			}*/
 			choose_tp();
 		}
 		FlushBatchDraw();

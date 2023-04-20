@@ -296,18 +296,6 @@ public:
 
     
 };
-
-
-
-/*
-void test_1(player_information & reimu,int x,int y)//如不改变结构体内容，可以加上const
-{
-    reimu.v_x;
-    reimu.x;
-    
-
-}
-*/
 struct player_information //玩家的信息
 {
     int name;
@@ -333,30 +321,22 @@ void player::shoot(double x_player, double y_player)//生成自机射出的子弹
 
 void player::move(double* x_player, double* y_player)//自机移动
 {
-    //(废弃)int inter_move = _getch();
-
-
     if (GetKeyState(38) < 0)//上        
     {
         *y_player -= v_player_y;
     }
-
     if (GetKeyState(40) < 0)//下          
     {
         *y_player += v_player_y;
     }
-
-
     if (GetKeyState(37) < 0)//左
     {
         *x_player -= v_player_x;
     }
-
     if (GetKeyState(39) < 0)//右           
     {
         *x_player += v_player_x;
     }
-
     //防止出界
     if (*x_player - r_player < tang_x)     //左   右
     {

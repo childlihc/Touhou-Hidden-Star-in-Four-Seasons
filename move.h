@@ -50,10 +50,9 @@ namespace move_class
 	}
 };
 
-class move_function   //这里记录一切运动轨迹函数
+namespace move_function   //这里记录一切运动轨迹函数
 	//直角坐标系
 {
-public:
 
 
 };
@@ -88,10 +87,10 @@ public:
 		//pow((x_ * x_ + y_ * y_ - 1),3) - pow(x,2) * pow(y,3) == 0
 	}
 };
-class _graphics_all graphics_all;
+class _graphics_all graphics_all;//为了pricate，就这么用吧
 namespace get_class
 {
-	double get_x(double time_exist, enemy_class::bullet who, double sth);
+	double get_x(double time_exist, enemy_class::bullet who, double sth);//坐标值   (?还是改变量)
 	double get_y(double time_exist, enemy_class::bullet who, double sth);
 };
 
@@ -104,7 +103,7 @@ double get_class::get_x(double time_exist, enemy_class::bullet who,double sth = 
 		return who.r_created * cos(who.move_theta) * time_exist;
 		break;
 	case move::move_step_by_step:
-		return 0.0;
+		return who.v_absolute * sin(time_exist);
 		break;
 
 	}
@@ -117,9 +116,6 @@ double get_class::get_y(double time_exist, enemy_class::bullet who,double sth = 
 		return who.r_created * sin(who.move_theta) * time_exist;
 	}
 
-
 }
-
-
 
 #endif // !_move_h_
