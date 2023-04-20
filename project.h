@@ -1,5 +1,8 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
+#ifndef _project_h_
+#define _project_h_
+
 
 /*已知bug
 * 发弹口的自机子弹没有伤害
@@ -24,12 +27,11 @@
 #include <vector>
 
 extern int time_game;
-extern double xy_to_theta(double x, double y, double* theta_name);
-extern double theta_to_x(double theta, double r);
-double theta_to_y(double theta, double r);
+//extern double switch_class::xy_to_theta(double x, double y, double* theta_name);
+//extern double switch_class::theta_to_x(double theta, double r);
+//double theta_to_y(double theta, double r);
 extern int screen_x, screen_y;
-extern class move_class;
-
+using namespace switch_class;
 //#include "c测试.cpp"
 
 #define pi 3.14159265
@@ -263,7 +265,7 @@ void draw_bullet(double enemy_x, double enemy_y, bullet_of_enemy* bullet_druw, C
 {
     setorigin(enemy_x, enemy_y);//设置原点坐标
     setfillcolor(color);
-    fillcircle(theta_to_x(bullet_druw->move_theta, bullet_druw->r_created)
+    fillcircle(switch_class::theta_to_x(bullet_druw->move_theta, bullet_druw->r_created)
         , theta_to_y(bullet_druw->move_theta, bullet_druw->r_created), 5);
     setorigin(0, 0);
 }
@@ -392,7 +394,14 @@ void bullet_class::draw_bullet(bullet_of_enemy* bullet_druw, COLORREF color = BL
 {
     setorigin(bullet_druw->enemy_x, bullet_druw->enemy_y);//设置原点坐标
     setfillcolor(color);
-    fillcircle(theta_to_x(bullet_druw->move_theta, bullet_druw->r_created)
-        , theta_to_y(bullet_druw->move_theta, bullet_druw->r_created), 5);
+    fillcircle(switch_class::theta_to_x(bullet_druw->move_theta, bullet_druw->r_created)
+        , switch_class::theta_to_y(bullet_druw->move_theta, bullet_druw->r_created), 5);
     setorigin(0, 0);
 }
+
+bool operator== (enemy_class frist, enemy_class second)
+{
+    return (frist.frist_bullet == second.frist_bullet && frist.name_enemy.frist_x == second.name_enemy.frist_x);
+}
+
+#endif // !_project_h_

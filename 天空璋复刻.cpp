@@ -96,9 +96,8 @@ int initialize(void)//初始化信息
 	BeginBatchDraw();
 	//初始化文字格式
 	gettextstyle(&normal);
-	                                                          //init_bullet_head();
+	                                                          //init_bullet_head();//用不上了
 	
-
 	return 1;
 }
 
@@ -252,50 +251,6 @@ void draw_game_picture()//绘制游戏开始时的画面
 	setfillcolor(BLUE);
 	fillrectangle(tang_x, tang_y, length_move_x, length_move_y);//绘制底板
 }
-/*(可能废弃了？)
-void generate_enemy(int frist_x,int frist_y)//生成敌机位置（不绘制，不移动）(不改变颜色)
-{
-	frist_enemy->name_enemy.frist_x = frist_x;//生成敌机（不绘制）
-	frist_enemy->frist_y = frist_y;
-	frist_enemy->x = frist_enemy->frist_x;
-	frist_enemy->y = frist_enemy->frist_y;
-	frist_enemy->isexisted = 1;
-	//frist_enemy->number = generate_enemy_number;
-	//赋值完毕
-	generate_enemy_number++;//下一个生成敌机的编号（第n+1个敌机生成）
-	tem_next_enemy = new set_enemy;
-	frist_enemy->next_enemy = tem_next_enemy;//实现链表
-	frist_enemy = tem_next_enemy;
-}
-*/
-/*
-void generate_enemy(int frist_x, int frist_y, COLORREF color[],int **which[],int number_judged) //改变颜色，后面三个分别是设置要显示的颜色、设置改变颜色的条件（第几个生成的要改变成什么样的颜色，是一一对应的）、被判断是否要改颜色的敌机是第number_judjed个生成的
-//或许可以设置一个static的数组（懒得试了）
-{
-	frist_enemy->frist_x = frist_x;//生成敌机（不绘制）
-	frist_enemy->frist_y = frist_y;
-	frist_enemy->x = frist_enemy->frist_x;
-	frist_enemy->y = frist_enemy->frist_y;
-	frist_enemy->isexisted = 1;
-	//frist_enemy->number = generate_enemy_number;
-
-	int number = sizeof **which / sizeof **which[0];//判断条件的总个数
-	for (int i = 0; i < number; i++)
-	{
-		if (number_judged == **which[i])
-		{
-			frist_enemy->color = color[i];
-		}
-	}
-	//赋值完毕
-	generate_enemy_number++;//下一个生成敌机的编号（第n+1个敌机生成）
-	tem_next_enemy = new set_enemy;
-	frist_enemy->next_enemy = tem_next_enemy;//实现链表
-	frist_enemy = tem_next_enemy;
-
-	
-}
-*/
 void draw_enemy(enemy_class* head_of_enemy = NULL)//(COLORREF color_enemy)//绘制敌机
 //输入链表头（如果有的话）
 {
@@ -308,36 +263,35 @@ void draw_enemy(enemy_class* head_of_enemy = NULL)//(COLORREF color_enemy)//绘�
 		setfillcolor(tem_enemy->name_enemy.color);
 		fillcircle(tem_enemy->name_enemy.x, tem_enemy->name_enemy.y, r_enemy);
 		tem_enemy = tem_enemy->next;
-		//未响应原因是next_enemy一直都是空指针（NULL）,原因其实是next_enemy一直没有初始化
-		//frist_enemy++;//可能是错的
-		
-
 	}
-	//delete(tem_enemy);
+	delete(tem_enemy);
+	tem_enemy = nullptr;
 }
 
-
-/*//错误的
-void free_enemy(struct enemy* delete_enemy)//删除敌机（未完成）
+enemy_class* delete_enemy(enemy_class* head,enemy_class* enemy_deleted)//输入地址的地址
 {
-	(*(delete_enemy - 1)).next_enemy = (*delete_enemy).next_enemy;//从链表中删除
+	enemy_class *tem_enemy;
+	tem_enemy = head;
+	enemy_class* new_head = new enemy_class;
+	new_head = tem_enemy;
+	while (tem_enemy != nullptr)
+	{
+		/*稍等
+		if (tem_enemy->next == enemy_deleted)
+		{
+			tem_enemy->next = enemy_deleted->next;
 
-
-	free(delete_enemy);
-
-}*/
-
-/*我是个傻逼
-struct enemy* return_next_enemy(struct enemy* enemy)
-{
-	return enemy->next_enemy;
-}
-*/
-int delete_enemy(set_enemy** tem_enemy,int number_enemy_delete)//输入地址的地址
-{
-
-
-	return 1;
+			
+			delete enemy_deleted;
+			enemy_deleted = nullptr;
+			return ;
+		}
+		*/
+		tem_enemy = tem_enemy->next;
+	}
+	delete new_head;
+	new_head = nullptr;
+	return head;
 }
 
 bullet_of_enemy* generated_bullet(double theta, double direction_orgin, COLORREF color, double v = 5, double delta_theta = 0)//生成弹幕并赋值
@@ -361,114 +315,29 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 	//准备敌机内存
 	//std::vector::clear();
 	
-	
-	//frist_enemy = (struct enemy*)malloc(sizeof enemy);//申请第零个敌机,实际上是一个变量
-	//frist_enemy = &test;
-	/*
-	if (frist_enemy == NULL)
-	{
-		outtextxy(screen_x / 2, screen_y / 2, L"敌机申请内存出错");//代表这是一个空指针
-		FlushBatchDraw();
-		_getch();
-	}
-	*/
-	
-	//true_frist_enemy = (struct enemy*)malloc(sizeof enemy);//保存第零个敌机的地址，用const会很麻烦
-	//true_frist_enemy = frist_enemy;
-	////struct enemy* second_enemy = {};//
-	//second_enemy = (struct enemy*)malloc(sizeof enemy);
-	
-	//
-	//frist_enemy->next_enemy = (struct enemy*)malloc(sizeof enemy);//提前为下一步做准备？？？
-
 	enemy_class* all_enemy = new enemy_class;
 	
 	all_enemy = information_enemy(&stage_1_youkai);//在这里赋好值再运行
 	enemy_class* tem_enemy = new enemy_class;
 	*tem_enemy = *all_enemy;
 	
-	while (1)//仔细想想，到底是用类列表还是用结构体列表,这涉及到以后赋值的问题
+	while (1)//只用类链表
 	{
 		true_frist_enemy = all_enemy;//???为了以后
 		time_game++;
 		draw_game_picture();
 		while(1)
 		{
-			if (time_game == tem_enemy->name_enemy.time_born + 200)//这里好像也得改
+			if (time_game == tem_enemy->name_enemy.time_born )//这里好像也得改
 			{
-				//generate_enemy((j - 1) * (length_move_x / 36.0) + (length_move_x - (((10.0 - i) / 12) * length_move_x)), defalut_generate_enemy_y_up);
-				///////////generate_enemy(tem_enemy->name_enemy.frist_x, tem_enemy->name_enemy.frist_y);//在while之前已经赋好值了
+				tem_enemy->name_enemy.isexisted = 1;
 			}
 			break;
 		}
-		/*switch (time_game)//生成敌机（只生成不移动）
-		{
-		case 2:
-			
-		{
-			int j = 0;
-			for (int i = 0; i < 10; i++)
-			{
-				j = 0;
-				do
-				{
-					//frist_enemy = new enemy;
-					/*
-					if (frist_enemy == NULL)
-					{
-						cleardevice();
-						outtextxy(screen_x / 2, screen_y / 2, L"敌机申请内存出错");//代表这是一个空指针
-						FlushBatchDraw();
-						_getch();
-					}/
-					
-					
-					//frist_enemy++;//转到下一个敌机的地址
-					//second_enemy = (struct enemy*)malloc(sizeof enemy);
-					//*second_enemy = ;                       //赋空值！！！
-					////frist_enemy = (struct enemy*)malloc(sizeof enemy);//申请下一个敌机的内存
-					//frist_enemy->next_enemy = (struct enemy*)malloc(sizeof enemy);
-					//frist_enemy->next_enemy = frist_enemy;//实现链表，（可能有误）
-					
-					//free(second_enemy);//用不上了
 
-					generate_enemy((j - 1) * (length_move_x / 36.0) + (length_move_x - (((10.0 - i) / 12) * length_move_x)), defalut_generate_enemy_y_up);
-					j++;
-					/*
-					if (frist_enemy->next_enemy == NULL)//检测下一级是否为空指针
-					{
-						cleardevice();
-						outtextxy(screen_x / 2, screen_y / 2, L"链表断了");//代表这是一个空指针
-						FlushBatchDraw();
-						_getch();
-					}
-					*/
-					/*else
-					
-					//next enemy不是空指针，但是不能读取里面的值
-					
-					{
-						cleardevice();
-						wchar_t tem_judge_bug = frist_enemy->next_enemy->x;
-						outtextxy(screen_x / 2, screen_y / 2, tem_judge_bug);//代表这不是是一个空指针
-						FlushBatchDraw();
-						_getch();
-					}/
-				} while (j < 3);
-			}		
-			break;
-		}
-		case 300:
-			break;
-		}*/
-		//delete(tem_next_enemy);//可能会出错???
 		//绘制敌机（包装成函数）
 		if (1)
 		{
-			//set_enemy* tem_last_enemy = (struct enemy*)malloc(sizeof enemy);
-			//*tem_last_enemy = *frist_enemy;
-			//frist_enemy = true_frist_enemy;
-			//set_enemy* tem_ = (struct enemy*)malloc(sizeof enemy);//防无响应
 			draw_enemy(true_frist_enemy);
 		}
 		//敌机移动（改变位置，不绘制）
@@ -554,7 +423,11 @@ int stage_1()//这里只负责在初坐标生成敌机，移动在别的函数�
 		*tem_head = *all_enemy;
 		while (tem_head != NULL)
 		{
-			draw_bullet(tem_head->name_enemy.frist_x, tem_head->name_enemy.frist_x, &(tem_head->bullet_enemy));
+			for (int i = 0; i < tem_head->number_of_bullet; i++)
+			{
+				draw_bullet(tem_head->name_enemy.frist_x, tem_head->name_enemy.frist_x, &(tem_head->frist_bullet[i]));
+			}
+			
 			tem_head = tem_head->next;
 		}
 
@@ -732,6 +605,7 @@ int game_start()//选择“游戏开始”后的画面
 			}
 			else if (inter == 'z'||inter == 'Z')//z
 			{
+				//这里有大箭头型代码的倾向
 				if (stage_1())
 				{
 					if (stage_2(alice))
@@ -814,6 +688,7 @@ int judge_ex()//判断ex难度是否解锁
 
 void printf_game_menu()
 {
+	graphics_all.heart(200, 200);
 	for (int i = 0; i < number_choose; i++)
 	{
 		outtextxy(frist_order_x + 20 + 5 * i + 10 * sin(control_choose_move), frist_order_y + 25 * i, menu[i]);
@@ -841,6 +716,8 @@ void printf_game_menu()
 	settextstyle(&normal);
 	//outtextxy();
 	//delay(8000.0/6);
+
+	
 }
 
 int for_main()
